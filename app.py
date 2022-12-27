@@ -1,7 +1,7 @@
 from flask import Flask, flash, redirect, render_template, request, session, Response
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
-from cs50 import SQL
+from helpers import MTTCalcDB
 from datetime import datetime
 
 
@@ -19,8 +19,8 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-# Configure CS50 Library to use SQLite database
-db = SQL("sqlite:///mttcalc.db")
+# Configure database
+db = MTTCalcDB("mttcalc.db")
 
 
 @app.after_request
@@ -37,9 +37,7 @@ def after_request(response: Response) -> Response:
 def index():
     """ Show the main page of MTTCalc web app """
 
-    # Get username if user is loged in
-    if session.get("user_id"):
-        user_name = db.execute("SELECT username FROM users WHERE id == ?", session.get("user_id"))
-
     # Pass username to template to show welcome message if user is loged in
-    return render_template("index.html", username=user_name)
+    return render_template("index.html", username=db.get_username())
+
+
