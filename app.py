@@ -20,7 +20,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Configure CS50 Library to use SQLite database
-db = SQL("mttcalc.db")
+db = SQL("sqlite:///mttcalc.db")
 
 
 @app.after_request
@@ -43,5 +43,3 @@ def index():
 
     # Pass username to template to show welcome message if user is loged in
     return render_template("index.html", username=user_name)
-
-
