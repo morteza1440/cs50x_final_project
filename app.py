@@ -33,3 +33,15 @@ def after_request(response: Response) -> Response:
     return response
 
 
+@app.route("/")
+def index():
+    """ Show the main page of MTTCalc web app """
+
+    # Get username if user is loged in
+    if session.get("user_id"):
+        user_name = db.execute("SELECT username FROM users WHERE id == ?", session.get("user_id"))
+
+    # Pass username to template to show welcome message if user is loged in
+    return render_template("index.html", username=user_name)
+
+
