@@ -1,12 +1,13 @@
 import os
 
 
-from flask import Flask, flash, redirect, render_template, request, session, Response
+from flask import Flask, flash, redirect, url_for, render_template, send_file, request, session, Response
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import MTTCalcDB, get_absorbances
+from helpers import MTTCalcDB, get_absorbances, calc_mtt, login_required
 from tempfile import mkdtemp
-from mttcalc import calc_viabilities
+from shutil import rmtree
+from ast import literal_eval
 from datetime import datetime
 
 
@@ -51,19 +52,184 @@ def mttcalc():
     """ Show forms to user and process submited data """
 
     if request.method == "GET":
-        render_template("mttcalc.html")
+        # Set number of groups and repeats
+        num_groups = request.args.get("num_groups")
+        num_groups = num_groups.strip() if num_groups else None
+
+        num_repeats = request.args.get("num_repeats")
+        num_repeats = num_repeats.strip() if num_repeats else None
+
+        # Check validity of them
+        if not num_groups or not num_groups.isdigit() or 1 > int(num_groups) > 20:
+            flash("Invalid number of groups.")
+            redirect(url_for("index"))
+
+        if not num_repeats or not num_repeats.isdigit() or 2 > int(num_repeats) > 10:
+            flash("Invalid number of repeats.")
+            redirect(url_for("index"))
+
+        # Show real form of MTTCalc
+        return render_template("mttcalc.html", num_groups=num_groups, num_repeats=num_repeats)
 
     # If method == POST
+    form = request.form
 
-    # Store submitted data in dataframe
-    absorbances = get_absorbances(request.form)
+    name = form.get("name")
+    if not name or name.strip() == "":
+        flash("Please enter name of the test.", "bg-danger")
+        return redirect(url_for("mttcalc"))
+
+    # Store submitted data in dataframe and set flash if failed
+    absorbances = get_absorbances(form)
+    if not absorbances:
+        return redirect(url_for("mttcalc"))
 
     # Create temporary directory to save mttcalc files
     temp_path = mkdtemp()
     if not "temp_path" in session or session["temp_path"] == "":
         session["temp_path"] = temp_path
     else:
+        # Remove previous tempdir
+        rmtree(session["temp_path"])
         session["temp_path"] = temp_path
 
-    absorbances.to_csv(os.path.join(temp_path, "absorbances.csv"), index=False)
+    # Save absorbances.csv to file
+    abs_path = os.path.join(temp_path, "absorbances.csv")
+    absorbances.to_csv(abs_path, index=False)
 
+    # Generate MTTCalc output files
+    if not calc_mtt(abs_path, temp_path):
+        redirect(url_for("mttcalc"))
+
+    # Save data to database if user is loged in
+    if session.get("user_id"):
+        db.execute("INSERT INTO data (user_id, name, num_groups, num_repeats, groups_name, values, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                   session.get("user_id"), name.strip(), form.get("num_groups"), form.get("num_repeats"),
+                   str(absorbances.columns), str(absorbances.values.tolist()), datetime.now())
+
+    # Redirect to download page
+    flash("Task was performed successfuly.")
+    return redirect(url_for("download"))
+
+
+@app.route("/download")
+def download():
+    """ Render download page or send file"""
+
+    # Store name of files exists inside the temp_path
+    files = os.listdir(session["temp_path"])
+    file_name = request.args.get("file_name")
+
+    ## Render download template if file_name parameter doesn't exist
+    if not file_name or file_name.strip() == "":
+        render_template("download.htm", files=files)
+
+    # Remove right and left white spaces from file_name
+    file_name = file_name.strip()
+
+    # If file exists send file
+    if file_name in files:
+        return send_file(os.path.join(session["temp_path"], file_name), as_attachment=True)
+
+    # If file doesn't exist redirect to download page with not found message
+    flash("File not found.")
+    return redirect(url_for("download"))
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    """ Register user """
+
+    if request.method == "GET":
+        return render_template("register.html")
+
+    # POST
+    username, password, confirmation =\
+        request.form.get("username"), request.form.get("password"), request.form.get("confirmation")
+
+    # Check inputs
+    if not username or not password or not confirmation or\
+            username == "" or password == "" or confirmation == "":
+        flash("Please fill all the fields.", "bg-danger")
+        return redirect(url_for("register"))
+
+    # Check password and confirmation
+    if not password == confirmation:
+        flash("Password must match the confirmation!", "bg-danger")
+        return redirect(url_for("register"))
+
+    try:
+        # Insert user into the database
+        db.execute("INSERT INTO users (username, hash) VALUES(?, ?)", username, generate_password_hash(password))
+    except ValueError as e:
+        if not str(e).find("UNIQUE constraint failed:") == -1:
+            flash("The username has already been taken", "bg-danger")
+            return redirect(url_for("register"))
+
+    flash("Registered successfully!")
+    return redirect("/")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    """ Log user in """
+
+    # Forget any user_id
+    flash_messages = session.get("_flashes")
+    session.clear()
+    if flash_messages:
+        session["_flashes"] = flash_messages
+
+    # User reached route via POST (as by submitting a form via POST)
+    if request.method == "GET":
+        return render_template("login.html")
+
+    # POST
+
+    # Ensure username was submitted
+    if not request.form.get("username"):
+        flash("username must be provided.", "bg-danger")
+        return render_template("login.html"), 403
+
+    # Ensure password was submitted
+    elif not request.form.get("password"):
+        flash("password must be provided.", "bg-danger")
+        return render_template("login.html"), 403
+
+    # Query database for username
+    rows = db.execute("SELECT * FROM users WHERE username == ?", request.form.get("username"))
+
+    # Ensure username exists and password is correct
+    if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
+        flash("Invalid username and/or password!", "bg-danger")
+        return render_template("login.html"), 403
+
+    # Remember which user has logged in
+    session["user_id"] = rows[0]["id"]
+
+    # Redirect user to index page
+    flash("Logged in successfully!")
+    return redirect("/")
+
+
+@app.route("/logout")
+def logout():
+    """ Log user out """
+
+    # Forget any user_id
+    session.clear()
+
+    # Redirect user to login form
+    flash("Logged out successfully!")
+    return redirect("/")
+
+
+@login_required
+@app.route("/history")
+def history():
+    """ Show history to loged in user """
+
+    # Read history of user from database
+    history = db.execute("SELECT * FROM data WHERE user_id == ?", session["user_id"])
+
+    return render_template("history.html", history=history)

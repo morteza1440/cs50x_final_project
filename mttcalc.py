@@ -87,8 +87,8 @@ def calc_viabilities(path: str, out_dir: str) -> DataFrame:
     # Read the absorbances from csv file
     try:
         absorbances = read_csv(path)
-    except (PermissionError, FileNotFoundError) as error:
-        exit(error)
+    except (PermissionError, FileNotFoundError):
+        return None
 
     # Store the name of columns and then update them (add t and b in front of treatment and blank groups, respectively)
     old_col_names = list(absorbances.columns)
@@ -107,8 +107,8 @@ def calc_viabilities(path: str, out_dir: str) -> DataFrame:
     # Save the viabilities into the viabilities.csv file in the provided path
     try:
         viabilities.round(2).to_csv(os.path.join(out_dir, "viabilities.csv"), index=False)
-    except PermissionError as error:
-        exit(error)
+    except PermissionError:
+        return None
 
     # Return data
     return viabilities

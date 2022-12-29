@@ -1,0 +1,8 @@
+pandas
+scipy
+bioinfokit
+matplotlib
+seaborn
+statsmodels
+flask
+inflect
