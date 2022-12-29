@@ -58,3 +58,12 @@ def mttcalc():
     # Store submitted data in dataframe
     absorbances = get_absorbances(request.form)
 
+    # Create temporary directory to save mttcalc files
+    temp_path = mkdtemp()
+    if not "temp_path" in session or session["temp_path"] == "":
+        session["temp_path"] = temp_path
+    else:
+        session["temp_path"] = temp_path
+
+    absorbances.to_csv(os.path.join(temp_path, "absorbances.csv"), index=False)
+
