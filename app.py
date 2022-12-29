@@ -1,7 +1,7 @@
 from flask import Flask, flash, redirect, render_template, request, session, Response
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import MTTCalcDB
+from helpers import MTTCalcDB, get_viabilities
 from datetime import datetime
 
 
@@ -41,6 +41,7 @@ def index():
     return render_template("index.html", username=db.get_username())
 
 
+@app.route("/mttcalc", methods=["GET", "POST"])
 def mttcalc():
     """ Show forms to user and process submited data """
 
@@ -48,22 +49,8 @@ def mttcalc():
         render_template("mttcalc.html")
 
     # If method == POST
-    num_groups = request.form.get("num_groups")
-    num_repeats = request.form.get("num_repeats")
-    data = {}
 
-    # Load data in a dic
-    for g in range(num_groups):
-        group = []
-        blank = []
+    # Make a dataframe using submitted data
+    viabilities = get_viabilities(request.form)
 
-        # Acumulate absorbances of each group and its blank
-        for r in range(num_repeats):
-            group.append(request.form.get(f"g{g}_r{r}"))
-            blank.append(request.form.get(f"b{g}_r{r}"))
 
-        # Add acumulated group and blank to data
-        data[request.form.get(f"g{g}")] = group
-        data[f"b{g}"] = blank
-
-    
