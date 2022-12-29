@@ -41,3 +41,29 @@ def index():
     return render_template("index.html", username=db.get_username())
 
 
+def mttcalc():
+    """ Show forms to user and process submited data """
+
+    if request.method == "GET":
+        render_template("mttcalc.html")
+
+    # If method == POST
+    num_groups = request.form.get("num_groups")
+    num_repeats = request.form.get("num_repeats")
+    data = {}
+
+    # Load data in a dic
+    for g in range(num_groups):
+        group = []
+        blank = []
+
+        # Acumulate absorbances of each group and its blank
+        for r in range(num_repeats):
+            group.append(request.form.get(f"g{g}_r{r}"))
+            blank.append(request.form.get(f"b{g}_r{r}"))
+
+        # Add acumulated group and blank to data
+        data[request.form.get(f"g{g}")] = group
+        data[f"b{g}"] = blank
+
+    

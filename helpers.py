@@ -17,9 +17,3 @@ class MTTCalcDB(SQL):
         # If user is not loged in, return None
         return None
 
-
-def get_username():
-    """ Return username from db """
-
-    if session.get("user_id"):
-        user_name = db.execute("SELECT username FROM users WHERE id == ?", session.get("user_id"))
