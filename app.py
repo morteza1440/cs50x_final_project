@@ -102,7 +102,7 @@ def mttcalc():
 
     # Save data to database if user is loged in
     if session.get("user_id"):
-        db.execute("INSERT INTO data (user_id, name, num_groups, num_repeats, groups_name, values, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        db.execute("INSERT INTO history (user_id, name, num_groups, num_repeats, name_groups, _values, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?)",
                    session.get("user_id"), name.strip(), form.get("num_groups"), form.get("num_repeats"),
                    str(absorbances.columns), str(absorbances.values.tolist()), datetime.now())
 
@@ -229,6 +229,6 @@ def history():
     """ Show history to loged in user """
 
     # Read history of user from database
-    history = db.execute("SELECT * FROM data WHERE user_id == ?", session["user_id"])
+    history = db.execute("SELECT * FROM history WHERE user_id == ?", session["user_id"])
 
     return render_template("history.html", history=history)
