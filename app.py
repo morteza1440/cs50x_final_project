@@ -7,7 +7,6 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from helpers import MTTCalcDB, get_absorbances, calc_mtt, login_required
 from tempfile import mkdtemp
 from shutil import rmtree
-from ast import literal_eval
 from datetime import datetime
 
 
