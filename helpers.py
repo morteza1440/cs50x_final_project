@@ -24,19 +24,19 @@ class MTTCalcDB(SQL):
         return None
 
 
-def get_viabilities(form: dict) -> DataFrame:
+def get_absorbances(form: dict) -> DataFrame:
     """ Return a dataframe initilized by submitted form data """
 
     num_groups: str = form.get("num_groups")
     num_groups = num_groups.strip() if num_groups else None
-    if not num_groups or not num_groups.isdigit() or 1 > int(num_groups) > 100:
-        flash("Number of groups should be an integer between 0 and 101.")
+    if not num_groups or not num_groups.isdigit() or 1 > int(num_groups) > 20:
+        flash("Number of groups should be an integer between 0 and 21.")
         return None
 
     num_repeats: str = form.get("num_repeats")
     num_repeats = num_repeats.strip() if num_repeats else None
-    if not num_repeats or not num_repeats.isdigit() or 1 > int(num_repeats) > 100:
-        flash("Number of repeats should be an integer between 0 and 101.")
+    if not num_repeats or not num_repeats.isdigit() or 1 > int(num_repeats) > 10:
+        flash("Number of repeats should be an integer between 0 and 11.")
         return None
 
     # Load data in a dic
@@ -50,12 +50,12 @@ def get_viabilities(form: dict) -> DataFrame:
         for r in range(int(num_repeats)):
             viability: str = form.get(f"g{g}_r{r}")
             viability = viability.strip() if viability else None
-            if not viability or not viability.replace(".", "1").isdigit():
+            if not viability or not viability.replace(".", "1").isdigit() or len(viability) > 10:
                 flash(f"Invalid value for {p.ordianl(r + 1)} repeat of group {g + 1}.")
 
             blank: str = form.get(f"b{g}_r{r}")
             blank = blank.strip() if blank else None
-            if not blank or not blank.replace(".", "1").isdigit():
+            if not blank or not blank.replace(".", "1").isdigit() or len(blank) > 10:
                 flash(f"Invalid value for {p.ordianl(r + 1)} repeat of group {g + 1} blank.")
 
             group.append(float(viability))

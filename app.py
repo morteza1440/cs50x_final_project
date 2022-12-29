@@ -1,7 +1,12 @@
+import os
+
+
 from flask import Flask, flash, redirect, render_template, request, session, Response
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import MTTCalcDB, get_viabilities
+from helpers import MTTCalcDB, get_absorbances
+from tempfile import mkdtemp
+from mttcalc import calc_viabilities
 from datetime import datetime
 
 
@@ -50,7 +55,6 @@ def mttcalc():
 
     # If method == POST
 
-    # Make a dataframe using submitted data
-    viabilities = get_viabilities(request.form)
-
+    # Store submitted data in dataframe
+    absorbances = get_absorbances(request.form)
 
