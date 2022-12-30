@@ -89,7 +89,7 @@ def mttcalc():
         session["out_dir"] = out_dir
     else:
         # Remove previous tempdir
-        rmtree(session["out_dir"])
+        rmtree(session["out_dir"], ignore_errors=True)
         session["out_dir"] = out_dir
 
     # Save absorbances.csv to file
@@ -115,11 +115,11 @@ def mttcalc():
 def download():
     """ Render download page or send file"""
 
-    # Store name of files exists inside the out_dir
+    # Store name of files exist inside the out_dir
     files = os.listdir(session["out_dir"])
     file_name = request.args.get("file_name")
 
-    ## Render download template if file_name parameter doesn't exist
+    # Render download template if file_name parameter doesn't exist
     if not file_name or file_name.strip() == "":
         return render_template("download.html", files=files)
 
