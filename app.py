@@ -59,11 +59,11 @@ def mttcalc():
         num_repeats = num_repeats.strip() if num_repeats else None
 
         # Check validity of number of groups and number of repeats
-        if not num_groups or not num_groups.isdigit() or 1 > int(num_groups) > 20:
+        if not num_groups or not num_groups.isdigit() or 20 < int(num_groups) < 1:
             flash("Invalid number of groups.")
             redirect(url_for("index"))
 
-        if not num_repeats or not num_repeats.isdigit() or 2 > int(num_repeats) > 10:
+        if not num_repeats or not num_repeats.isdigit() or 10 < int(num_repeats) < 2:
             flash("Invalid number of repeats.")
             redirect(url_for("index"))
 
@@ -107,7 +107,7 @@ def mttcalc():
                    str(list(absorbances.columns)).replace(" ", ""), str(absorbances.values.tolist()).replace(" ", ""), datetime.now())
 
     # Redirect to download page
-    flash("Task was performed successfuly.")
+    flash("Task was done successfuly.")
     return redirect(url_for("download"))
 
 
