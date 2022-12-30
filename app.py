@@ -104,7 +104,8 @@ def mttcalc():
     if session.get("user_id"):
         db.execute("INSERT INTO history (user_id, name, num_groups, num_repeats, name_groups, _values, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?)",
                    session.get("user_id"), name.strip(), form.get("num_groups"), form.get("num_repeats"),
-                   str(list(absorbances.columns)).replace(" ", ""), str([absorbances[c] for c in list(absorbances)]).replace(" ", ""), datetime.now())
+                   str(list(absorbances.columns)).replace(" ", ""), str([absorbances[c] for c in list(absorbances)]).replace(" ", ""),
+                   datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     # Redirect to download page
     flash("Task was done successfuly.")
@@ -123,7 +124,7 @@ def download():
     if not file_name or file_name.strip() == "":
         return render_template("download.html", files=files)
 
-    # Remove right and left white spaces from file_name
+    # If file_name parameter exists
     file_name = file_name.strip()
 
     # If file exists send file
