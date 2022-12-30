@@ -5,33 +5,35 @@
 {% endblock %}
 
 {% block main %}
-    <table class="table table-striped table-bordered align-middle">
-        <thead>
-            <tr>
-                <th class="text-start">Name</th>
-                <th class="text-start">Groups name</th>
-                <th class="text-start">Absorbances</th>
-                <th class="text-start">Time</th>
-            </tr>
-        </thead>
-        <tbody>
+    <div class="table-responsive">
+        <table class="table align-middle table-striped table-bordered ">
+            <thead>
+                <tr>
+                    <th class="text-start">Name</th>
+                    <th class="text-start">Groups name</th>
+                    <th class="text-start">Absorbances</th>
+                    <th class="text-start">Time</th>
+                </tr>
+            </thead>
+            <tbody>
 
-            {% if history %}
+                {% if history %}
 
-                {% for row in history %}
+                    {% for row in history %}
 
-                    <tr>
-                        <td class="text-start">{{ row.name }}</td>
-                        <td class="text-end">{{ row.name_groups }}</td>
-                        <td class="text-end">{{ row._values }}</td>
-                        <td class="text-end">{{ row.timestamp }}</td>
-                    </tr>
+                        <tr>
+                            <td class="text-start">{{ row.name }}</td>
+                            <td class="text-start">{{ row.name_groups }}</td>
+                            <td class="text-start">{{ row._values }}</td>
+                            <td class="text-start">{{ row.timestamp }}</td>
+                        </tr>
 
-                {% endfor %}
+                    {% endfor %}
 
-            {% endif %}
+                {% endif %}
 
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 
 {% endblock %}
