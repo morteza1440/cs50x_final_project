@@ -67,7 +67,7 @@ def mttcalc():
             flash("Invalid number of repeats.")
             redirect(url_for("index"))
 
-        # Show real form of MTTCalc
+        # Show form of MTTCalc
         return render_template("mttcalc.html", num_groups=num_groups, num_repeats=num_repeats)
 
     # If method == POST
@@ -121,7 +121,7 @@ def download():
 
     ## Render download template if file_name parameter doesn't exist
     if not file_name or file_name.strip() == "":
-        render_template("download.htm", files=files)
+        return render_template("download.html", files=files)
 
     # Remove right and left white spaces from file_name
     file_name = file_name.strip()
@@ -183,7 +183,7 @@ def login():
     if request.method == "GET":
         return render_template("login.html")
 
-    # POST
+    # if request.method == "POST"
 
     # Ensure username was submitted
     if not request.form.get("username"):
@@ -232,3 +232,5 @@ def history():
     history = db.execute("SELECT * FROM history WHERE user_id == ?", session["user_id"])
 
     return render_template("history.html", history=history)
+
+
