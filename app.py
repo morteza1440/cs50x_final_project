@@ -4,7 +4,8 @@ import os
 from flask import Flask, flash, redirect, url_for, render_template, send_file, request, session, Response
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import MTTCalcDB, get_absorbances, calc_mtt, login_required
+from cs50 import SQL
+from helpers import get_absorbances, calc_mtt, login_required
 from tempfile import mkdtemp
 from shutil import rmtree
 from datetime import datetime
@@ -25,7 +26,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Configure database
-db = MTTCalcDB("mttcalc.db")
+db = SQL("sqlite:///mttcalc.db")
 
 
 @app.after_request
@@ -42,8 +43,7 @@ def after_request(response: Response) -> Response:
 def index():
     """ Show the main page of MTTCalc web app """
 
-    # Pass username to template to show welcome message if user is loged in
-    return render_template("index.html", username=db.get_username())
+    return render_template("index.html")
 
 
 @app.route("/mttcalc", methods=["GET", "POST"])
@@ -59,11 +59,11 @@ def mttcalc():
         num_repeats = num_repeats.strip() if num_repeats else None
 
         # Check validity of number of groups and number of repeats
-        if not num_groups or not num_groups.isdigit() or 20 < int(num_groups) < 1:
+        if not num_groups or not num_groups.isdigit() or not 0 < int(num_groups) < 21:
             flash("Invalid number of groups.")
             redirect(url_for("index"))
 
-        if not num_repeats or not num_repeats.isdigit() or 10 < int(num_repeats) < 2:
+        if not num_repeats or not num_repeats.isdigit() or not 1 < int(num_repeats) < 11:
             flash("Invalid number of repeats.")
             redirect(url_for("index"))
 

@@ -1,5 +1,4 @@
 from flask import flash, redirect
-from cs50 import SQL
 from flask import session
 from pandas import DataFrame
 from mttcalc import calc_viabilities, draw_barchart, draw_boxplot, Anova
@@ -11,22 +10,6 @@ import os
 
 
 p = inflect.engine()
-
-
-class MTTCalcDB(SQL):
-
-    def __init__(self, path: str):
-        super(MTTCalcDB, self).__init__(f"sqlite:///{path}")
-
-    def get_username(self):
-        """ Return username of loged in user """
-
-        # If user is loged in, return username
-        if session.get("user_id"):
-            return self.execute("SELECT username FROM users WHERE id == ?", session.get("user_id"))
-
-        # If user is not loged in, return None
-        return None
 
 
 def get_absorbances(form: dict) -> DataFrame:
@@ -56,13 +39,13 @@ def get_absorbances(form: dict) -> DataFrame:
             viability: str = form.get(f"g{g}_r{r}")
             viability = viability.strip() if viability else None
             if not viability or not viability.replace(".", "1").isdigit() or len(viability) > 10:
-                flash(f"Invalid value for {p.ordianl(r + 1)} repeat of group {g + 1}.", "bg-danger")
+                flash(f"Invalid value for {p.ordinal(r + 1)} repeat of group {g + 1}.", "bg-danger")
                 return None
 
             blank: str = form.get(f"b{g}_r{r}")
             blank = blank.strip() if blank else None
             if not blank or not blank.replace(".", "1").isdigit() or len(blank) > 10:
-                flash(f"Invalid value for {p.ordianl(r + 1)} repeat of group {g + 1} blank.", "bg-danger")
+                flash(f"Invalid value for {p.ordinal(r + 1)} repeat of group {g + 1} blank.", "bg-danger")
                 return None
 
             group.append(float(viability))
