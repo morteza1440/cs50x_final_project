@@ -43,3 +43,11 @@ img
     display: inline;
     width: 4.64rem !important
 }
+
+.table-bordered > tbody > tr > td,
+.table-bordered > thead > tr > td,
+.table-bordered
+{
+    border-bottom: 0;
+    border-top: 0;
+}
