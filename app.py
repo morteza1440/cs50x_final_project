@@ -58,7 +58,7 @@ def mttcalc():
         num_repeats = request.args.get("num_repeats")
         num_repeats = num_repeats.strip() if num_repeats else None
 
-        # Check validity of them
+        # Check validity of number of groups and number of repeats
         if not num_groups or not num_groups.isdigit() or 1 > int(num_groups) > 20:
             flash("Invalid number of groups.")
             redirect(url_for("index"))
@@ -83,21 +83,21 @@ def mttcalc():
     if not absorbances:
         return redirect(url_for("mttcalc"))
 
-    # Create temporary directory to save mttcalc files
-    temp_path = mkdtemp()
-    if not "temp_path" in session or session["temp_path"] == "":
-        session["temp_path"] = temp_path
+    # Create temporary directory to save mttcalc files in it
+    out_dir = mkdtemp()
+    if not "out_dir" in session or session["out_dir"] == "":
+        session["out_dir"] = out_dir
     else:
         # Remove previous tempdir
-        rmtree(session["temp_path"])
-        session["temp_path"] = temp_path
+        rmtree(session["out_dir"])
+        session["out_dir"] = out_dir
 
     # Save absorbances.csv to file
-    abs_path = os.path.join(temp_path, "absorbances.csv")
+    abs_path = os.path.join(out_dir, "absorbances.csv")
     absorbances.to_csv(abs_path, index=False)
 
-    # Generate MTTCalc output files
-    if not calc_mtt(abs_path, temp_path):
+    # Generate MTTCalc output files and set flash if failed
+    if not calc_mtt(abs_path, out_dir):
         redirect(url_for("mttcalc"))
 
     # Save data to database if user is loged in
@@ -115,8 +115,8 @@ def mttcalc():
 def download():
     """ Render download page or send file"""
 
-    # Store name of files exists inside the temp_path
-    files = os.listdir(session["temp_path"])
+    # Store name of files exists inside the out_dir
+    files = os.listdir(session["out_dir"])
     file_name = request.args.get("file_name")
 
     ## Render download template if file_name parameter doesn't exist
@@ -128,7 +128,7 @@ def download():
 
     # If file exists send file
     if file_name in files:
-        return send_file(os.path.join(session["temp_path"], file_name), as_attachment=True)
+        return send_file(os.path.join(session["out_dir"], file_name), as_attachment=True)
 
     # If file doesn't exist redirect to download page with not found message
     flash("File not found.")
