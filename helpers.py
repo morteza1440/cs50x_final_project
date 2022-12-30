@@ -64,14 +64,14 @@ def get_absorbances(form: dict) -> DataFrame:
     return DataFrame(data)
 
 
-def calc_mtt(form: dict, abs_path: str, temp_path: str):
+def calc_mtt(form: dict, abs_path: str, out_dir: str):
     """
         Perform MTTCalc one passed absorbances.csv file
-        and save outputs inside temp_path
+        and save output files inside out_dir
     """
 
     # Calculate viabilites.csv from absorbances.csv
-    viabilities = calc_viabilities(abs_path, temp_path)
+    viabilities = calc_viabilities(abs_path, out_dir)
     if not viabilities:
         flash("Can not calculate viabilities. Check your data and try again.", "bg-danger")
         return False
@@ -81,15 +81,15 @@ def calc_mtt(form: dict, abs_path: str, temp_path: str):
         angle: str = form.get("angle")
         angle = float(angle) if angle and angle.strip().replace(".", "1").isdigit() else None
 
-        draw_barchart(os.path.join(temp_path, "viabilities.csv"), os.path.join(temp_path, "bc.png"),
+        draw_barchart(os.path.join(out_dir, "viabilities.csv"), os.path.join(out_dir, "barchart.png"),
                       title=form.get("bc_t"), xlabel=form.get("bc_x"), ylabel=form.get("bc_y"), angle=angle)
 
     # Generate pb.png
     if form.get("bp"):
-        draw_boxplot(viabilities, os.path.join(temp_path, "bp.png"))
+        draw_boxplot(viabilities, os.path.join(out_dir, "boxplot.png"))
 
     try:
-        anova = Anova(viabilities, temp_path)
+        anova = Anova(viabilities, out_dir)
     except ValueError:
         # Exit if out_dir is not valid
         flash("Internal server error. Try again later.", "bg-danger")
