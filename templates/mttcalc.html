@@ -14,7 +14,7 @@
         <div class="table-responsive">
             <table class="table table-sm table-striped-columns">
                 <thead>
-                    <tr>
+                    <tr class="text-center">
 
                         {% for group_num in range(num_groups) %}
 
@@ -25,12 +25,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    <tr class="text-center">
 
                         {% for group_num in range(num_groups) %}
 
                             <td>
-                                <input autocomplete="off" autofocus class="form-control" style="width:9.61rem!important;" name="g{{ group_num }}" placeholder="Group name" type="text">
+                                <input autocomplete="off" autofocus class="form-control m-auto" style="width:9.61rem!important;" name="g{{ group_num }}" placeholder="Group name" type="text">
                             </td>
 
                         {% endfor %}
@@ -39,7 +39,7 @@
 
                     {% for rep in range(num_repeats) %}
 
-                        <tr>
+                        <tr class="text-center">
 
                             {% for group_num in range(num_groups) %}
 
@@ -72,7 +72,7 @@
             <input type="hidden" name="ca" value="true">
             <input type="hidden" name="mc" value="true">
         </div>
-        <button class="btn btn-primary mx-auto mt-2" type="submit">Calculate</button>
+        <button class="btn btn-primary mx-auto mt-3" type="submit">Calculate</button>
     </form>
 
 {% endblock %}
