@@ -68,7 +68,7 @@ def mttcalc():
             redirect(url_for("index"))
 
         # Show form of MTTCalc
-        return render_template("mttcalc.html", num_groups=num_groups, num_repeats=num_repeats)
+        return render_template("mttcalc.html", num_groups=int(num_groups), num_repeats=int(num_repeats))
 
     # If method == POST
     form = request.form
@@ -76,12 +76,12 @@ def mttcalc():
     name = form.get("name")
     if not name or name.strip() == "":
         flash("Please enter name of the test.", "bg-danger")
-        return redirect(url_for("mttcalc"))
+        return redirect(url_for("mttcalc", num_groups=form.get("num_groups"), num_repeats=form.get("num_repeats")))
 
     # Store submitted data in dataframe and set flash if failed
     absorbances = get_absorbances(form)
-    if not absorbances:
-        return redirect(url_for("mttcalc"))
+    if type(absorbances) is type(None):
+        return redirect(url_for("mttcalc", num_groups=form.get("num_groups"), num_repeats=form.get("num_repeats")))
 
     # Create temporary directory to save mttcalc files in it
     out_dir = mkdtemp()
@@ -97,14 +97,14 @@ def mttcalc():
     absorbances.to_csv(abs_path, index=False)
 
     # Generate MTTCalc output files and set flash if failed
-    if not calc_mtt(abs_path, out_dir):
-        redirect(url_for("mttcalc"))
+    if not calc_mtt(form, abs_path, out_dir):
+        redirect(url_for("mttcalc", num_groups=form.get("num_groups"), num_repeats=form.get("num_repeats")))
 
     # Save data to database if user is loged in
     if session.get("user_id"):
         db.execute("INSERT INTO history (user_id, name, num_groups, num_repeats, name_groups, _values, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                   session.get("user_id"), name.strip(), form.get("num_groups"), form.get("num_repeats"),
-                   str(list(absorbances.columns)).replace(" ", ""), str([absorbances[c].values for c in list(absorbances)]).replace(" ", ""),
+                   session.get("user_id"), name.strip(), int(form.get("num_groups")), int(form.get("num_repeats")),
+                   str(list(absorbances.columns)).replace(" ", ""), str([list(absorbances[c].values) for c in list(absorbances)]).replace(" ", ""),
                    datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     # Redirect to download page
@@ -167,7 +167,7 @@ def register():
             return redirect(url_for("register"))
 
     flash("Registered successfully!")
-    return redirect("/")
+    return redirect(url_for("login"))
 
 
 @app.route("/login", methods=["GET", "POST"])

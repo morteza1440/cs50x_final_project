@@ -72,7 +72,7 @@ def calc_mtt(form: dict, abs_path: str, out_dir: str):
 
     # Calculate viabilites.csv from absorbances.csv
     viabilities = calc_viabilities(abs_path, out_dir)
-    if not viabilities:
+    if type(viabilities) is type(None):
         flash("Can not calculate viabilities. Check your data and try again.", "bg-danger")
         return False
 
@@ -81,12 +81,12 @@ def calc_mtt(form: dict, abs_path: str, out_dir: str):
         angle: str = form.get("angle")
         angle = float(angle) if angle and angle.strip().replace(".", "1").isdigit() else None
 
-        draw_barchart(os.path.join(out_dir, "viabilities.csv"), os.path.join(out_dir, "barchart.png"),
+        draw_barchart(viabilities, os.path.join(out_dir, "barchart.png"),
                       title=form.get("bc_t"), xlabel=form.get("bc_x"), ylabel=form.get("bc_y"), angle=angle)
 
     # Generate pb.png
     if form.get("bp"):
-        draw_boxplot(viabilities, os.path.join(out_dir, "boxplot.png"))
+        draw_boxplot(viabilities, os.path.join(out_dir, f"name.png"))
 
     try:
         anova = Anova(viabilities, out_dir)

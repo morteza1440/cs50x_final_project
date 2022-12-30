@@ -8,7 +8,10 @@
 
     <h4 class="mb-5">Please enter the values:</h4>
     <form action="/mttcalc" method="post">
-        <div class="table-responsive -xlg">
+        <input type="hidden" name="num_groups" value="{{ num_groups }}">
+        <input type="hidden" name="num_repeats" value="{{ num_repeats }}">
+
+        <div class="table-responsive">
             <table class="table table-sm table-striped-columns">
                 <thead>
                     <tr>
@@ -54,20 +57,20 @@
         <div class="mt-3">
             {% if session["user_id"] %}
                 <label for="testName" class="form-label">Name:</label>
-                <input autocomplete="off" autofocus class="form-control" name="t" placeholder="Test name" type="text">
+                <input autocomplete="off" autofocus class="form-control" name="name" placeholder="Test name" type="text">
             {% endif %}
-            <label for="chartTitle" class="form-label">Chart title:</label>
+            <label for="chartTitle" class="form-label mt-3">Chart title:</label>
             <input autocomplete="off" autofocus class="form-control" name="t" placeholder="Chart title" type="text">
-            <label for="chartXLabel" class="form-label">Chart x-label:</label>
+            <label for="chartXLabel" class="form-label  mt-3">Chart x-label:</label>
             <input autocomplete="off" autofocus class="form-control" name="x" placeholder="x-label" type="text">
-            <label for="chartYLabel" class="form-label">Chart y-label:</label>
+            <label for="chartYLabel" class="form-label mt-3">Chart y-label:</label>
             <input autocomplete="off" autofocus class="form-control" name="y" placeholder="y-label" type="text">
-            <label for="xTicksRotation" class="form-label">Angle of x-axis tick rotation:</label>
+            <label for="xTicksRotation" class="form-label mt-3">Angle of x-axis tick rotation:</label>
             <input autocomplete="off" autofocus class="form-control" name="a" placeholder="Angle" type="number">
-            <input type="hidden" name="bc">
-            <input type="hidden" name="bp">
-            <input type="hidden" name="ca">
-            <input type="hidden" name="mc">
+            <input type="hidden" name="bc" value="true">
+            <input type="hidden" name="bp" value="true">
+            <input type="hidden" name="ca" value="true">
+            <input type="hidden" name="mc" value="true">
         </div>
         <button class="btn btn-primary mx-auto mt-2" type="submit">Calculate</button>
     </form>
