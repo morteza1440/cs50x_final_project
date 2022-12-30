@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+
+    <div>
+        <div class="mb-3">
+            <h5>Please enter the number of groups of treatment and the number of repeats:<h5>
+        </div>
+        <form action="/mttcalc" method="get">
+            <div class="mb-3">
+                <input autocomplete="off" autofocus class="form-control w-auto" name="num_groups" placeholder="Number of groups" type="number">
+            </div>
+            <div class="mb-3">
+                <input autocomplete="off" autofocus class="form-control w-auto" name="num_repeats" placeholder="Number of repeats" type="number">
+            </div>
+            <button class="btn btn-primary mx-auto w-auto" type="submit">Next</button>
+        </form>
+    </div>
+
+    <div class="line"></div>
+
+    <article>
+        <h2 class="text-center pb-2">MTT Assay</h2>
+        <h4>What is MTT assay?</h4>
+        <p class="pb-3">MTT assay is a simple colorimetric test of cell proliferation and survival, which was developed by Mosmann and adapted by Cole for measuring chemosensitivity of human lung cancer cell lines. It is well known as the first homogeneous cell viability assay was designed for 96-well plates for high-throughput screening. Since then, MTT tetrazolium assay technology has been widely adopted and remains popular in academic labs as evidenced by thousands of published article.</p>
+        <h4>How does the MTT assay work?</h4>
+        <p>The assay is based on the reduction of a yellow tetrazolium salt (3-(4,5-dimethylthiazol-2-yl)-2,5-diphenyltetrazolium bromide or MTT) to purple formazan crystals by living cells (Figure-1), which shows mitochondrial function. Further, the insoluble formazan salt is dissolved by the addition of solubilizing agents, and the absorbance is measured at 570 nm with a multiplate reader. The percentage of cell viability is calculated using the following equation: % Viability = (OD<sub>sample</sub>/ Mean OD<sub>blank</sub>) × 100.</p>
+    </article>
+
+    <figure class="text-center my-5">
+        <img src="/static/mtt.jpg" alt="Metabolism of MTT to a formazan salt and 96-well plate">
+        <figcaption><strong>Figure-1.</strong> Metabolism of MTT to a formazan salt by viable cells as shown in a chemical reaction <b>(A)</b> and in a 96-well plate <b>(B)</b>.</figcaption>
+    </figure>
+
+    <div>
+        <h6>Sources:</h6>
+        <address>
+            Kamiloglu, S., 2020<br>
+            <a href="https://www.sigmaaldrich.com/DE/en/technical-documents/protocol/cell-culture-and-cell-culture-analysis/cell-counting-and-health-analysis/cell-proliferation-kit-i-mtt">sigmaaldrich.com</a>
+        </address>
+    </div>
+
+{% endblock %}

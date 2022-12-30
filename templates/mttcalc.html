@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Calculator
+{% endblock %}
+
+{% block main %}
+
+    <h4 class="mb-5">Please enter the values:</h4>
+    <form action="/mttcalc" method="post">
+        <div class="table-responsive -xlg">
+            <table class="table table-sm table-striped-columns">
+                <thead>
+                    <tr>
+
+                        {% for group_num in range(num_groups) %}
+
+                            <th>Sample-{{ group_num }} | Blank-{{ group_num }}</th>
+
+                        {% endfor %}
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+
+                        {% for group_num in range(num_groups) %}
+
+                            <td>
+                                <input autocomplete="off" autofocus class="form-control" style="width:9.61rem!important;" name="g{{ group_num }}" placeholder="Group name" type="text">
+                            </td>
+
+                        {% endfor %}
+
+                    </tr>
+
+                    {% for rep in range(num_repeats) %}
+
+                        <tr>
+
+                            {% for group_num in range(num_groups) %}
+
+                                <td><input autocomplete="off" autofocus class="form-control cell" name="g{{ group_num }}_r{{ rep }}" placeholder="OD" type="text"> <input autocomplete="off" autofocus class="form-control cell" name="b{{ group_num }}_r{{ rep }}" placeholder="OD" type="text"></td>
+
+                            {% endfor %}
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-3">
+            {% if session["user_id"] %}
+                <label for="testName" class="form-label">Name:</label>
+                <input autocomplete="off" autofocus class="form-control" name="t" placeholder="Test name" type="text">
+            {% endif %}
+            <label for="chartTitle" class="form-label">Chart title:</label>
+            <input autocomplete="off" autofocus class="form-control" name="t" placeholder="Chart title" type="text">
+            <label for="chartXLabel" class="form-label">Chart x-label:</label>
+            <input autocomplete="off" autofocus class="form-control" name="x" placeholder="x-label" type="text">
+            <label for="chartYLabel" class="form-label">Chart y-label:</label>
+            <input autocomplete="off" autofocus class="form-control" name="y" placeholder="y-label" type="text">
+            <label for="xTicksRotation" class="form-label">Angle of x-axis tick rotation:</label>
+            <input autocomplete="off" autofocus class="form-control" name="a" placeholder="Angle" type="number">
+            <input type="hidden" name="bc">
+            <input type="hidden" name="bp">
+            <input type="hidden" name="ca">
+            <input type="hidden" name="mc">
+        </div>
+        <button class="btn btn-primary mx-auto mt-2" type="submit">Calculate</button>
+    </form>
+
+{% endblock %}
