@@ -8,14 +8,14 @@
 
     <div>
         <div class="mb-3">
-            <h5>Please enter the number of groups of treatment and the number of repeats:<h5>
+            <h5>Please enter the number of treatment groups and the number of repeats:<h5>
         </div>
         <form action="/mttcalc" method="get">
             <div class="mb-3">
-                <input autocomplete="off" autofocus class="form-control w-auto" name="num_groups" placeholder="Number of groups" type="number">
+                <input autocomplete="off" autofocus style="width: 210px" class="form-control" name="num_groups" placeholder="Number of groups" type="number" min="2" max="20">
             </div>
             <div class="mb-3">
-                <input autocomplete="off" autofocus class="form-control w-auto" name="num_repeats" placeholder="Number of repeats" type="number">
+                <input autocomplete="off" style="width: 210px" class="form-control" name="num_repeats" placeholder="Number of repeats" type="number" min="2" max="10">
             </div>
             <button class="btn btn-primary mx-auto w-auto" type="submit">Next</button>
         </form>

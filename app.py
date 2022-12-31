@@ -59,7 +59,7 @@ def mttcalc():
         num_repeats = num_repeats.strip() if num_repeats else None
 
         # Check validity of number of groups and number of repeats
-        if not num_groups or not num_groups.isdigit() or not 0 < int(num_groups) < 21:
+        if not num_groups or not num_groups.isdigit() or not 1 < int(num_groups) < 21:
             flash("Invalid number of groups.")
             redirect(url_for("index"))
 
