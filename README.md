@@ -39,4 +39,5 @@ Required modules can be installed using pip3 comman:
 
 ## Usage
 Inside the project directory, type this command:
+
 `flask run`
