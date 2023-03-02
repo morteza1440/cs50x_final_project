@@ -29,7 +29,7 @@ Inside this module, Anova class is defined for checking one-way ANOVA assumption
 This is the sqlite3 database file and contains users and history tables.
 ### static folder
 Contains image and css files.
-### templates
+### templates folder
 Contains all the templates described in the app.py component.
 ### requirements.txt
 Listed all the modules that must be installed before running flask run.
