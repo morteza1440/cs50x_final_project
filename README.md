@@ -1,4 +1,4 @@
-# MTTCalc Website
+# MTTCalc Website (CS50 Final Project)
 #### Video Demo: https://youtu.be/7w8wQPUPJEo
 
 ## Introduction
@@ -18,46 +18,21 @@ After processing raw data, the viablities data can be used for statistical analy
 This is the main file that contains the views:
 1. index: asociated to "/" route, return index.html template. Users can enter the number of groups and number of repeats in this page.
 2. mttcalc: associated to "/mttcalc" route. For get requests, return mttcalc.html template. In this page, the fields must be filled with absorbance values for groups and their blanks. For logged in users, the name of test should be entered. For post requests, absorbances read from post body with get_absorbances function and save to a file. The file path feed to the calc_mtt function to generate output files. If the user was logged in, a record will be saved in the database. Finally, user will be redirected to the download page.
-3. download: If the 
-4. One-Way ANOVA: For checking one-way ANOVA assumptions, performing one-way ANOVA and finaly tukey test, Anova class is defined inside anova module.
-### project_test.py
-Inside this file five functions defined to test set_ext, draw_barchart, draw_boxplot, calc_viabilities, and get_new_col_names.
+3. download: If file_name parameter doesn't exist in the download route, the download.html will be rendered. In the other hand, if file_name exists and has a value, the file will be send to the user.
+4. register, login, and logout: With this views, user can register, login and logout, respectively. session is used for saving user_id for logging user in.
+5. history: This view is responsible fetching user saved records from database and rendering history.html to the user.
+### helpers.py
+The get_absorbances, calc_mtt, and login_required decorator have been defined in this file.
 ### anova.py
 Inside this module, Anova class is defined for checking one-way ANOVA assumptions (check_assumptions), perform one-way ANOVA itself (test) and finaly perform tukey test (perform_tukey). Each of these functions saves its result inside the out.dat file. The bioinfokit, statsmodels and scipy modules used for performing statistical analysis.
 ### requirements.txt
-Listed all the modules that must be installed before running MTTCalc app.
+Listed all the modules that must be installed before running flask run.
 Required modules can be installed using pip3 comman:
 
 `pip3 install -r requirements.txt`
 
 ## Usage
+Inside the project directory, type this command:
 ```
-$ python project.py --help
-usage: project.py [-h] [--barchart BARCHART_FILE_NAME] [-t TITLE] [-x XLABEL] [-y YLABEL] [-a ANGLE]
-         [--boxplot BOXPLOT_FILE_NAME] [--check-assumptions] [--multiple-comparison] [-o OUT_DIR] path
-
-Statistical analysis of MTT assay data using one-way ANOVA.
-
-positional arguments:
-  path                  path to the csv file containing absorbance reads
-
-options:
-  -h, --help            show this help message and exit
-  --barchart BARCHART_FILE_NAME
-                        draw bar chart of data.
-  -t TITLE, --title TITLE
-                        title of bar chart.
-  -x XLABEL, --xlabel XLABEL
-                        label of x axes for bar chart.
-  -y YLABEL, --ylabel YLABEL
-                        label of y axes for bar chart.
-  -a ANGLE, --angle ANGLE
-                        x ticks rotation in bar chart.
-  --boxplot BOXPLOT_FILE_NAME
-                        draw box plot of data.
-  --check-assumptions   check normal distribution and homogeneity.
-  --multiple-comparison
-                        tukey pairwise multiple comparison.
-  -o OUT_DIR, --out-dir OUT_DIR
-                        output directory, default is current directory.
-  ```
+$ flask run
+```
