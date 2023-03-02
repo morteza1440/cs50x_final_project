@@ -16,15 +16,21 @@ After processing raw data, the viablities data can be used for statistical analy
 
 ### app.py
 This is the main file that contains the views:
-1. index: asociated to "/" route, return index.html template. Users can enter the number of groups and number of repeats in this page.
-2. mttcalc: associated to "/mttcalc" route. For get requests, return mttcalc.html template. In this page, the fields must be filled with absorbance values for groups and their blanks. For logged in users, the name of test should be entered. For post requests, absorbances read from post body with get_absorbances function and save to a file. The file path feed to the calc_mtt function to generate output files. If the user was logged in, a record will be saved in the database. Finally, user will be redirected to the download page.
-3. download: If file_name parameter doesn't exist in the download route, the download.html will be rendered. In the other hand, if file_name exists and has a value, the file will be send to the user.
-4. register, login, and logout: With this views, user can register, login and logout, respectively. session is used for saving user_id for logging user in.
+1. index: Asociated to "/" route, return index.html template. Users can enter the number of groups and number of repeats in this page.
+2. mttcalc: Associated to "/mttcalc" route. For get requests, return mttcalc.html template. In this page, the fields must be filled with absorbance values for groups and their blanks. For logged in users, the name of test should be entered. For post requests, absorbances read from post body with get_absorbances function and save to a file. The file path feed to the calc_mtt function to generate output files. If the user was logged in, a record will be saved in the database. Finally, user will be redirected to the download page.
+3. download: Associated to "/download" route. If file_name parameter doesn't exist in the download route, the download.html will be rendered. In the other hand, if file_name exists and has a value, the file will be send to the user.
+4. register, login, and logout: Associated to "/register", "/login", and "/logout" routes respectivly. With this views, user can register, login and logout, respectively. session is used for saving user_id for logged in users.
 5. history: This view is responsible fetching user saved records from database and rendering history.html to the user.
 ### helpers.py
 The get_absorbances, calc_mtt, and login_required decorator have been defined in this file.
 ### anova.py
 Inside this module, Anova class is defined for checking one-way ANOVA assumptions (check_assumptions), perform one-way ANOVA itself (test) and finaly perform tukey test (perform_tukey). Each of these functions saves its result inside the out.dat file. The bioinfokit, statsmodels and scipy modules used for performing statistical analysis.
+### mttcalc.db
+This is the sqlite3 database file and contains users and history tables.
+### static folder
+Contains image and css files.
+### templates
+Contains all the templates described in the app.py component.
 ### requirements.txt
 Listed all the modules that must be installed before running flask run.
 Required modules can be installed using pip3 comman:
@@ -33,6 +39,4 @@ Required modules can be installed using pip3 comman:
 
 ## Usage
 Inside the project directory, type this command:
-```
-$ flask run
-```
+`flask run`
