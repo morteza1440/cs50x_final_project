@@ -1,4 +1,4 @@
-# MTTCalc Website (CS50 Final Project)
+# MTTCalc Website (CS50X Final Project)
 #### Video Demo: https://youtu.be/7w8wQPUPJEo
 
 ## Introduction
