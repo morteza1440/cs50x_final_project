@@ -1,4 +1,4 @@
-# MTTCalc
+# MTTCalc Website
 #### Video Demo: https://youtu.be/7w8wQPUPJEo
 
 ## Introduction
@@ -17,8 +17,8 @@ After processing raw data, the viablities data can be used for statistical analy
 ### app.py
 This is the main file that contains the views:
 1. index: asociated to "/" route, return index.html template. Users can enter the number of groups and number of repeats in this page.
-2. mttcalc: associated to "/mttcalc" route. For get requests, return mttcalc.html template. In this page, the fields must be filled with absorbance values for groups and their blanks. For logged in users, the name of test should be entered. For post requests, absorbances read from post body with get_absorbances function and feed to the 
-3. Plotting: This app can plot box plot and bar chart of the viabilities data. draw_barchart and draw_boxplot functions defined for these functionalities. the boxplot and swarmplot functions from seaborn module, and bar and errorbar functions from matplotlib module used for plotting the charts. The user should use --boxplot and --barchart switches for enabling these functionality of the app. set_ext function defined to set the extention of the chart files to png.
+2. mttcalc: associated to "/mttcalc" route. For get requests, return mttcalc.html template. In this page, the fields must be filled with absorbance values for groups and their blanks. For logged in users, the name of test should be entered. For post requests, absorbances read from post body with get_absorbances function and save to a file. The file path feed to the calc_mtt function to generate output files. If the user was logged in, a record will be saved in the database. Finally, user will be redirected to the download page.
+3. download: If the 
 4. One-Way ANOVA: For checking one-way ANOVA assumptions, performing one-way ANOVA and finaly tukey test, Anova class is defined inside anova module.
 ### project_test.py
 Inside this file five functions defined to test set_ext, draw_barchart, draw_boxplot, calc_viabilities, and get_new_col_names.
