@@ -74,7 +74,7 @@ def mttcalc():
     form = request.form
 
     name = form.get("name")
-    if not name or name.strip() == "":
+    if session.get("user_id") and (not name or name.strip() == ""):
         flash("Please enter name of the test.", "bg-danger")
         return redirect(url_for("mttcalc", num_groups=form.get("num_groups"), num_repeats=form.get("num_repeats")))
 
