@@ -109,8 +109,7 @@ class Anova(stat):
         perform multiple pairwise comparison using Tukey's HSD/Kramer
         and append summary to output file
         """
-        print("-----------\n", self.reshaped_data, "---------------\n")
-
+        
         # Tukey
         self.tukey_hsd(df=self.reshaped_data, res_var="value", xfac_var="treatments", anova_model="value ~ C(treatments)")
 
